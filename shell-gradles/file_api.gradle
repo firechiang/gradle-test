@@ -1,0 +1,47 @@
+// 文件相关的API
+def rootDir = this.getRootDir()
+println "根项目的文件路劲=${rootDir}"
+println "根项目的绝对路劲=${rootDir.absolutePath}"
+println "当前工程的绝对路劲"+this.getProjectDir().absolutePath
+// this.buildDir
+println "构建目录的绝对路劲="+this.getBuildDir().absolutePath
+
+println "获取文件里面的内容="+getContext("shell-gradles/config.gradle")
+
+// 拷贝文件（注意：这个其实是调用了copy函数）
+this.copy {
+    // 源文件（注意: 查找文件是以当前工程为基准的，而且如果源文件是个文件夹的话会拷贝里面的所有文件）
+    // 注意：这种其实是调用了from函数
+    from this.file("gradlew")
+    // 要拷贝到的目录（注意: 目录查找是以当前工程为基准的）
+    into "test_dir"//this.getRootProject().getBuildDir()
+    // 不拷贝那些文件
+    exclude "",""
+    // 拷贝完成后对文件进行重命名
+    rename "gradlew","gradlew.txt"
+}
+
+// 遍历文件下的所有文件（文件夹是以当前工程为基准的）
+this.fileTree("test_dir",{FileTree filetree ->
+    // 遍历文件夹里面的内容
+    filetree.visit { FileTreeElement el ->
+        // 注意：在这里也可以调用copy函数，进行文件拷贝
+        println "遍历到的文件="+el.file.name
+    }
+})
+
+
+/**
+ * 获取文件里面的内容
+ * @param path
+ */
+def getContext(String path) {
+    try {
+        // 注意：this.file函数查找文件是以当前工程为基准的
+        def file = this.file(path)
+        return file.text
+    }catch(GradleException e){
+        e.printStackTrace()
+    }
+    return null
+}

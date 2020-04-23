@@ -1,0 +1,22 @@
+// 挂载task任务到构建过程当中（注意：当前这个挂载方式是错误的，不能使用）
+
+task taskTDD {
+    doLast {
+        println "任务taskTD开始执行了。。。。。。。。。。。。。。。。。。。。。。。。"
+    }
+}
+
+// 在配置阶段之后执行阶段之前执行（注意：测试以下代码的命令是：gradle build）
+this.afterEvaluate { Project project ->
+    // 获取build task任务（注意：build task任务是gradle内置就有的）
+    def buildTask = project.tasks.getByName("build")
+    Task taskTDD = project.tasks.getByName("taskTDD")
+    if(null != buildTask) {
+        // 在 build task任务之后添加逻辑
+        buildTask.doLast {
+            // 执行某个task（注意：这个函数已经不能用了）
+            //taskTDD.execute()
+            println "任务taskTD开始执行了。。。。。。。。。。。。。。。。。。。。。。。。"
+        }
+    }
+}

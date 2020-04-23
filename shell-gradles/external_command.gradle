@@ -1,0 +1,25 @@
+// 外部命令的执行（就是执行当前操作系统里面的命令）
+// 创建一个task他的名字是test_external_command，要执行的内容就是闭包里面的内容（注意：task的执行是直接使用 gradle test_external_command 命令执行）
+//this.task(name:'test_external_command1'){
+//
+//}
+// 和上面的写法意思一样
+this.task("test_external_command",{
+    // 这个里面的内容是在gradle的执行阶段去执行的，而不是配置阶段执行
+    doLast {
+        // 要执行的系统命令
+        def commandStr = "dir"
+        // 执行命令
+        exec {
+            try{
+                // 命令类型，其实就是调用了 executable 函数（注意：linux 传的是 bash）
+                executable 'cmd'
+                // 要执行的命令
+                args '-c',commandStr
+                println "系统本地命令执行完成..........................."
+            }catch(Exception e){
+                e.printStackTrace()
+            }
+        }
+    }
+})

@@ -1,0 +1,77 @@
+// 指定task任务的执行顺序
+
+//-----------------------手动指定执行顺序-------------------------//
+// taskX 在taskY之后执行
+task taskX(dependsOn: 'taskY') {
+    doLast {
+        println "任务taskX开始执行了"
+    }
+}
+
+task taskY {
+    doLast {
+        println "任务taskY开始执行了"
+    }
+}
+
+// taskZ 在taskX和taskY之后执（注意：测试命令使用 gradle taskZ）
+task taskZ(dependsOn: ["taskX","taskY"]) {
+    doLast {
+        println "任务taskZ开始执行了"
+    }
+}
+// taskZ 在taskX和taskY之后执（注意：这个写法和上面的意思一样）
+//taskZ.dependsOn("taskX","taskY")
+
+
+//-----------------------动态指定执行顺序1-------------------------//
+// 定义任务taskP（注意：<< 表示 doLast，建议使用 doLast 而不是 <<）
+//task taskP << { println "任务taskP开始执行了" }
+
+task taskP {
+    doLast {
+        println "任务taskP开始执行了"
+    }
+}
+
+task taskL {
+    doLast {
+        println "任务taskL开始执行了"
+    }
+}
+// 测试命令使用 gradle taskM
+task taskM {
+    // 指定taskM在taskP之后执行（注意：this.tasks.findAll 就是找到指定的task，她返回的是个数组）
+    dependsOn this.tasks.findAll { task ->
+        return task.name == "taskP"
+    }
+    doLast {
+        println "任务taskM开始执行了"
+    }
+}
+
+//-----------------------动态指定执行顺序2-------------------------//
+// 测试命令使用： gradle taskTT taskGG taskBB
+task taskTT {
+    // 强制指定taskT在taskG之后执行（注意：这种方式需要同时指定多个task任务执行，才会有后先后顺序的区分）
+    mustRunAfter "taskGG"
+    // 不强制指定taskT在taskG之后执行
+    //shouldRunAfter "taskGG"
+    doLast {
+        println "任务taskTT开始执行了"
+    }
+}
+
+task taskGG {
+    doLast {
+        println "任务taskG开始执行了"
+    }
+}
+
+task taskBB {
+    // 强制指定taskB在taskT,taskG之后执行
+    mustRunAfter "taskTT","taskGG"
+    doLast {
+        println "任务taskBB开始执行了"
+    }
+}

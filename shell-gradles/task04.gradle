@@ -1,0 +1,58 @@
+// task任务的输入输出（就是在task任务初始化的时候传入一些信息，供扩展程序使用）
+// 定义一些扩展属性
+ext {
+    versionCode = "1"
+    versionName = "1.0"
+    versionDesc = "首个版本"
+}
+
+// 创建一个任务taskWrite并为其添加输入属性并使用属性（注意：测试命令使用 gradle taskWrite）
+task taskWrite() {
+    // 定义输入
+    inputs.property("versionCode",this.versionCode)
+    inputs.property("versionName",this.versionName)
+    inputs.property("versionDesc",this.versionDesc)
+
+    def descFile = this.file("test_dir/taskWrite.txt")
+    // 如果文件不存在就创建
+    if(null == descFile || !descFile.exists()){
+        descFile.createNewFile()
+    }
+    //定义文件格式的输入
+    //inputs.file descFile
+    //定义文件格式的输出
+    outputs.file descFile
+
+    // 在这个逻辑里面使用输入输出信息
+    doLast {
+        // 获取所有传入的数据
+        def inMap = inputs.getProperties()
+        // 获取输出的文件
+        def file = outputs.getFiles().getSingleFile()
+        // 将map转换为实体对象
+        def msg = new VersionMsg(inMap)
+        def strW = new StringWriter()
+        def xmlBuild = new groovy.xml.MarkupBuilder(strW)
+        // 文件里面的内容是空的
+        //if(file.text == null && file.text.size() == 0) {
+        // 写入release节点
+        xmlBuild.release {
+            release {
+                versionCode(msg.versionCode)
+                versionName(msg.versionName)
+                versionDesc(msg.versionDesc)
+            }
+        }
+        //}
+        // 将信息写入到文件
+        file.withWriter { write -> write.write(strW.toString())}
+        println "XML文件写入完成。。。。。。。。。。。。。。。。。。。。。。。"
+    }
+}
+
+
+class VersionMsg {
+    String versionCode
+    String versionName
+    String versionDesc
+}

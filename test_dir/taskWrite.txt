@@ -1,0 +1,7 @@
+<release>
+  <release>
+    <versionCode>1</versionCode>
+    <versionName>1.0</versionName>
+    <versionDesc>Ê×¸ö°æ±¾</versionDesc>
+  </release>
+</release>

@@ -1,0 +1,38 @@
+//-------------------task任务的定义---------------------------------------//
+
+// 定义一个task它的名字叫 test_test01（第一种创建Task任务的方法，注意：这个其实是调用了task函数，第一个参数是名称，第二个参数是闭包）
+task test_test01 {
+    println "任务test_test01开始执行了"
+}
+// 这个和上面的意思一样，只是把名字改了（注意：这个其实是调用了task函数，第一个参数是名称，第二个参数是闭包）
+task ("test_test02") {
+    println "任务test_test02开始执行了"
+}
+// 创建task并为任务配置相关属性
+task test_test03(group: '任务组',description: '任务说明') {
+    println "任务test_test03开始执行了"
+}
+
+// 定义一个task它的名字叫 test_test04（第二种创建Task任务的方法，注意：这个其实是调用了create函数，第一个参数是名称，第二个参数是闭包）
+this.tasks.create("test_test04") {
+    setGroup("任务组")
+    setDescription("任务说明")
+    println "任务test_test04开始执行了"
+}
+
+
+//-------------------指定task任务在执行阶段执行（注意：如果在执行时不指定这个task任务的名称，doFirst和doLast的逻辑是不会执行的）---------------------------------------//
+task test_test05(group: '任务组',description: '任务说明') {
+    // 在执行阶段task任务之前执行
+    doFirst {
+        println "任务test_test05首个doLast开始执行了"
+    }
+    // 在执行阶段task任务之后执行
+    doLast {
+        println "任务test_test05第一个doLast开始执行了"
+    }
+}
+// 为任务test_test05添加在执行阶段task任务之后的逻辑（注意：这种写法和写在代码块里面的意思是一样的）
+test_test05.doLast {
+    println "任务test_test05第二个doLast开始执行了"
+}

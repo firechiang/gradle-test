@@ -1,0 +1,70 @@
+//--------------------------Project相关Api---------------------------------//
+// 调用Project里面的project函数，找到 gradle-test-app 子工程，为其添加扩展（注意：大括号写在括号外面也是可以的，最后一个参数是闭包参数是可以写在括号外面的）
+this.project("gradle-test-api",{Project project ->
+    // 注意：这种其实是调用了apply函数
+    // 指定源码结构（注意：这个其实是添加java打包插件，就是所有的模块都打成jar文件）
+    //apply plugin: 'java'
+    // 指定Group
+    group 'com.firechiang'
+    // 指定版本
+    version "v1.0.2"
+    // 为其指定依赖
+    dependencies {
+    }
+})
+
+// 调用Project里面的allprojects函数，为所有的模块添加扩展（就是以下配置所有模块生效）
+this.allprojects { Project project ->
+    //注意：这种其实是调用了apply函数（注意：这个其实是添加java打包插件，就是所有的模块都打成jar文件）
+    //apply plugin: 'java'
+    group 'com.firechiang'
+    version "v1.0.2"
+    // 依赖
+    dependencies {
+
+    }
+}
+
+// 调用Project里面的subprojects函数，为所有子模块添加扩展（注意：当前模块不生效）
+this.subprojects { Project project ->
+    //注意：这种其实是调用了apply函数（注意：这个其实是添加java打包插件，就是所有子模块都打成jar文件）
+    //apply plugin: 'java'
+    group 'com.firechiang'
+    version "v1.0.2"
+    // 依赖
+    dependencies {
+
+    }
+    // 子模块里面包含java源码结构
+    if (project.plugins.contains("java")) {
+        println "子模块里面包含java源码结构"
+    }
+    // 为子模块定义扩展属性（注意：扩展属性不需要指定类型，而且这些属性在子模块里面可以使用 this.属性名 获取）
+    // 注意：这个种方式Gradle会帮我们在每个子模块里面创建扩展属性（如果只是扩展属性不推荐写在这里，推荐写在最外面）
+    ext {
+        // 注意 this.aaaaaa 变量定义在 config.gradle 脚本里面，在上面的扩展块里面引入了config.gradle 脚本
+        asasas = this.aaaaaa
+    }
+}
+
+
+// 调用下面自定义的函数（注意：默认这个函数是在配置阶段执行的）
+getProjects ()
+/**
+ * 定义一个获取项目所有的Project（就是获取项目所有的的模块）的函数
+ */
+def getProjects () {
+    println "------获取项目所有的Project（就是获取项目所有的的模块）的函数，开始执行------"
+    //this.getSubprojects() 获取当前项目下的所有子模块
+    //this.getParent()      获取当前项目的父模块
+    //this.getRootProject() 获取根模块
+    //获取项目所有的的模块
+    this.getAllprojects().eachWithIndex{ Project entry, int i ->
+        if(i == 0) {
+            println "Root Project=${entry.name}"
+        }else{
+            println "Children Project=${entry.name}"
+        }
+    }
+    println "------获取项目所有的Project（就是获取项目所有的的模块）的函数，执行结束------"
+}

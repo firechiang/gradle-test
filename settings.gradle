@@ -1,0 +1,13 @@
+// 根项目的名称
+rootProject.name = 'gradle-test'
+// 引入子模块（注意：这个其实是调用了include函数）
+include 'gradle-test-model'
+include 'gradle-test-api'
+
+// 如果有isPrint属性，则将其转换为 Boolean 类型，如果没有直接将其置为false（注意：isPrint属性定义在 gradle.properties 文件里面）
+if(hasProperty("isPrint") ? isPrint.toBoolean() : false) {
+    println "初始化阶段开始执行...（注意：这段代码写在 settings.gradle 里面）"
+}
+include 'gradle-test-webapp'
+include 'gradle-test-springbootapp'
+

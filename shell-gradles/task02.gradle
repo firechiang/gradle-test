@@ -1,0 +1,20 @@
+// 计算build时长的脚本
+
+
+def startTime,endTime
+// 在配置阶段之后执行阶段之前执行（注意：测试以下代码的命令是：gradle build）
+this.afterEvaluate { Project project ->
+    // 获取到名字叫assemble的任务（注意：这个任务是gradle构建时，内部所使用的任务，我们直接获取即可）
+    def assemble = project.tasks.getByName("assemble")
+    // 添加任务执行之前的逻辑
+    assemble.doFirst {
+        startTime = System.currentTimeMillis()
+    }
+    // 获取到名字叫build的任务（注意：这个任务是gradle构建时，内部所使用的任务，我们直接获取即可）
+    def build = project.tasks.getByName("build")
+    // 添加任务执行之后的逻辑
+    build.doLast {
+        endTime = System.currentTimeMillis()
+        println "整个构建耗时：${endTime - startTime}"
+    }
+}

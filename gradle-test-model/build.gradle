@@ -1,0 +1,17 @@
+// 注意：plugins上面不能写代码，否则报错
+plugins {
+    // 表示jar包程序（其实就是一个打jar包的插件；更多构建查看官网文档：https://gradle.org/guides/）
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+println "gradle-test-model项目的父模块="+this.getParent().name

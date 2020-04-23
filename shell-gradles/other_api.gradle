@@ -1,0 +1,28 @@
+import org.omg.CORBA.RepositoryIdHelper
+
+// 其它API相关
+// 注意：这种其实是调用了buildscript函数
+this.buildscript { ScriptHandler handler ->
+    // 配置工程的仓库
+    handler.repositories { RepositoryHandler repositoryHandler ->
+        repositoryHandler.jcenter()
+        // 使用本地maven仓库
+        repositoryHandler.mavenLocal()
+        // 使用maven中央仓库
+        repositoryHandler.mavenCentral()
+        repositoryHandler.maven {
+            name "aliyun"
+            // 使用阿里云maven仓库
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+            // 指定用户名密码
+            credentials {
+                username=""
+                password=""
+            }
+        }
+    }
+    // 配置工程的插件（注意：这里只能配置插件）
+    handler.dependencies {
+
+    }
+}

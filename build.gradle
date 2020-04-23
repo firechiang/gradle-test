@@ -1,0 +1,132 @@
+// 注意：多模块工程的根项目不需要指定打包插件
+// subprojects 里面的配置表示所有子模块生效
+// 注意：因为这个是多模块工程，而且当前是根工程，所以加了 subprojects，如果是单工程是不要加 subprojects 的
+// 注意：下面有很多代码都注释掉了，是因为加了 subprojects 导致它们不能使用了，所有都注释掉了，如果是单工程是可以使用的
+subprojects {
+    // 注意：这个其实是调用了 group 函数
+    group 'com.firechiang'
+    version 'v1.0.2'
+    // 指定JDK版本
+    //sourceCompatibility = 1.8
+    repositories {
+        // 使用本地maven仓库（注意：这种其实是调用了mavenLocal函数）
+        mavenLocal()
+        // 使用阿里云maven仓库
+        maven {
+            name "aliyun"
+            url "http://maven.aliyun.com/nexus/content/groups/public/"
+            // 指定用户名密码
+            credentials {
+                username = ""
+                password = ""
+            }
+        }
+        // 使用maven中央仓库
+        mavenCentral()
+        // 使用spring开发环境maven的仓库
+        maven {
+            name "spring_snapshot"
+            url "https://repo.spring.io/snapshot"
+        }
+        maven {
+            name "spring_milestone"
+            url "https://repo.spring.io/milestone"
+        }
+        jcenter()
+    }
+
+//------------注意：下面的代码不能使用了，是因为代码被最上层的 subprojects 包起来了，所以才注释掉的------------------//
+/**
+ * 添加依赖
+ * compile引入方式： 打包时会将依赖打入到jar当中
+ * provider引入方式：只会在编译时使用，打包时不会添加jar当中
+ * implementation： 添加依赖（只在当前模块使用）
+ */
+//    dependencies {
+//        // 添加依赖，不能使用${}取变量，否则报错（注意：这种其实是调用了compile函数，后面的大括号其实就是闭包参数）
+//        compile('org.codehaus.groovy:groovy-all:2.4.19') {
+//            // 过滤掉某个依赖（如果有依赖冲突的话，可能需要过滤）
+//            //exclude module: 'groovy-core'
+//            // 过滤掉某个group下的所有依赖（如果有依赖冲突的话，可能需要过滤）
+//            //exclude group: 'com.firechiang'
+//            // 指定传递依赖为true（就是当前这个依赖，它还依赖了其它jar包，我们的这个工程要不要使用那些其它jar包（默认是false，建议也是不要使用，因为那些jar包可能会被删除））
+//            transitive false
+//            // 是否每次都从服务器拉取
+//            changing true
+//        }
+//        // 添加多个jar文件的依赖
+//        compile fileTree(includes: ['*.jar'], dir: 'test_dir')
+//        // 添加单个jar文件的依赖
+//        //compile file('')
+//        // 添加源码工程的依赖（xxxxxx 是模块名称，注意前面加冒号）
+//        //compile project(:xxxxxx)
+//        // 添加插件
+//        //compileClasspath ''
+//        testCompile group: 'junit', name: 'junit', version: '4.12'
+//        // 添加依赖（只在当前模块使用）
+//        //implementation ''
+//        // 添加依赖（注意：这种方式添加的依赖只会在编译时使用，打包时不会添加）
+//        //provider ''
+//    }
+    // 配置编译依赖冲突的级别
+    configurations.all {
+        resolutionStrategy {
+            // 如果有依赖冲突直接编译失败
+            failOnVersionConflict()
+            // 为解决依赖冲突的jar包，强制使用某个jar包的某个版本（注意：这种解决依赖冲突的方式不推荐使用）
+            //force 'com.firechiang:testtestets:0.0.2'
+        }
+    }
+
+// 定义变量（注意：语法就是Groovy语法）
+    def defCharsetEncoding = "UTF-8"
+
+//-----------------注意：下面的代码不能使用了，是因为代码被最上层的 subprojects 包起来了，所以才注释掉的------------------------------//
+
+// 引入其它gradle脚本（配置脚本）注意：这种其实是调用了apply函数
+//    apply from: "./shell-gradles/config.gradle"
+// 引入其它gradle脚本，和上面引入脚本的写法是一个意思（注意：this.file函数查找文件是以当前工程为基准的）
+//apply from: this.file("config.gradle")
+// 引入其它gradle脚本（生命周期监听器相关脚本）
+//    apply from: "./shell-gradles/lifecycle_listeners.gradle"
+// 引入其它gradle脚本（project操作相关相关脚本）
+//    apply from: "./shell-gradles/project_api.gradle"
+// 引入其它gradle脚本（file操作相关相关脚本）
+//    apply from: "./shell-gradles/file_api.gradle"
+// 引入其它gradle脚本（外部命令的执行（就是执行当前操作系统里面的命令））
+//    apply from: "./shell-gradles/external_command.gradle"
+// 引入其它gradle脚本（task任务的定义）
+//    apply from: "./shell-gradles/task01.gradle"
+// 引入其它gradle脚本（计算build时长的脚本）
+//    apply from: "./shell-gradles/task02.gradle"
+// 引入其它gradle脚本（指定task任务的执行顺序）
+//    apply from: "./shell-gradles/task03.gradle"
+// 引入其它gradle脚本（task任务的输入输出（就是在task任务初始化的时候传入一些信息，供扩展程序使用））
+//    apply from: "./shell-gradles/task04.gradle"
+// 引入其它gradle脚本（挂载task任务到构建过程当中）
+//    apply from: "./shell-gradles/task05.gradle"
+
+// 定义扩展属性（注意：扩展属性是不需要写属性的类型的）
+// 注意：这个扩展属性的作用域是全局的，所有模块包括子模块都可以直接使用 this.属性名称 取值
+//    ext {
+//        // 定义属性
+//        defCharsetEncoding1 = defCharsetEncoding
+//        // 引入其它gradle脚本里面的扩展属性
+//        apply from: "./shell-gradles/config.gradle"
+//    }
+
+//    println "获取到config.gradle脚本里面定义的变量 aaaaaa=${this.aaaaaa}"
+
+// 指定 Gradle 脚本编码，在 Help-> Edit Custom VM Options 里面添加 -Dfile.encoding=UTF-8 最后重启IDEA
+// 指定项目编译编码
+    this.tasks.withType(JavaCompile) {
+        options.encoding = defCharsetEncoding
+    }
+// 指定项目文档编码
+    this.tasks.withType(Javadoc) {
+        options.encoding = this.defCharsetEncoding1
+    }
+
+}
+
+
